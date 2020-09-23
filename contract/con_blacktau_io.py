@@ -8,7 +8,6 @@ operator = Variable()
 def seed(vk: str):
     balances[vk] = 1000000000
     balances["chips_value"] = 5
-    balances["fees"] = 0.03
     symbol.set('GIFI')
     operator.set(vk)
 
@@ -116,9 +115,8 @@ def pay(amount: float, account: str):
     assert balances[account] >= amount, 'Not enough coins to send!'
   
     total_balance = amount / balances["chips_value"]
-    total_balance -= (total_balance * balances["fees"])
 
-    currency.transfer_from(total_balance, account, sender)
+    currency.transfer_from(total_balance *  decimal('0.97'), account, sender)
 
     balances[account] -= amount   
     balances[account, 'chips_count'] -= amount
@@ -136,8 +134,8 @@ def pay_self(porcent: float):
     assert balances[account] >= amount, 'Not enough coins to send!'
   
     total_balance = amount / balances["chips_value"]
-    total_balance -= (total_balance * balances["fees"])
-    currency.transfer_from(total_balance, account, sender)
+
+    currency.transfer_from(total_balance *  decimal('0.97'), account, sender)
 
     balances[account] -= amount
     balances[account, 'chips_count'] -= amount
@@ -179,13 +177,8 @@ def approve(amount: float, to: str):
 def change_value(value: float):
     assert_owner()
     assert value > 0, 'Cannot send negative value!'
-
     balances["chips_value"] = value
 
-@export
-def change_fees(value: float):
-    assert_owner()
-    balances["fees"] = value
 
 
 def assert_owner():
